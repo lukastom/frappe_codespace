@@ -8,7 +8,7 @@
   },
   "dockerComposeFile": "./docker-compose.yml",
   "service": "frappe",
-  "workspaceFolder": "/workspace/frappe-bench",
+  "workspaceFolder": "/workspace",
   "postCreateCommand": "bash /workspace/scripts/init.sh",
   "shutdownAction": "stopCompose",
   "extensions": [
