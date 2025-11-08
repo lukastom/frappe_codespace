@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-# V Codespaces máme /workspace = root repozitáře
+# V Codespaces máme /workspace = root repozitáře (je namapovaný v docker-compose.yml)
 WORKDIR="/workspace"
 BENCH_DIR="$WORKDIR/frappe-bench"
 
 echo "🚀 Initializing Frappe bench in $BENCH_DIR"
 
-# Když už bench existuje (třeba při restartu Codespace), skonči
+# Pokud už bench existuje (třeba při restartu Codespace), skonči
 if [[ -f "$BENCH_DIR/apps/frappe/frappe/__init__.py" ]]; then
   echo "✅ Bench already exists, skipping init"
   exit 0
@@ -42,4 +42,4 @@ bench --site dev.localhost clear-cache
 bench use dev.localhost
 
 echo "✅ Init done."
-echo "➡️  Run in terminal: cd frappe-bench && bench start"
+echo "➡️  In terminal run: cd frappe-bench && bench start"
