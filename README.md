@@ -1,6 +1,6 @@
 # Setup
 
-Go to <kbd>Code > Codespaces > Create codespace on master</kbd>
+On GitHub, in this repository, go to <kbd>Code > Codespaces > Create codespace on master</kbd>
 
 Setup happens in two steps - 
 1. Github will first create a codespace
