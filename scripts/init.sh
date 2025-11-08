@@ -1,44 +1,59 @@
-#!bin/bash
+#!/bin/bash
 
 set -e
 
-if [[ -f "/workspaces/frappe_codespace/frappe-bench/apps/frappe" ]]
-then
+# Najdi root repozitáře relativně k tomuto skriptu
+WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Když už existuje bench appka, nic nedělej (Codespace restart apod.)
+if [[ -f "$WORKDIR/frappe-bench/apps/frappe" ]]; then
     echo "Bench already exists, skipping init"
     exit 0
 fi
 
-rm -rf /workspaces/frappe_codespace/.git
+# (Volitelné) Nesahal bych na .git, ale pokud chceš čistý workspace, nech:
+# rm -rf "$WORKDIR/.git"
 
-source /home/frappe/.nvm/nvm.sh
-nvm alias default 18
-nvm use 18
+# Node verze přes nvm
+if [[ -f "/home/frappe/.nvm/nvm.sh" ]]; then
+    # shellcheck source=/dev/null
+    source /home/frappe/.nvm/nvm.sh
+    nvm alias default 18
+    nvm use 18
+    echo "nvm use 18" >> ~/.bashrc
+fi
 
-echo "nvm use 18" >> ~/.bashrc
-cd /workspace
+cd "$WORKDIR"
 
+# Inicializuj bench (nevytváří site)
 bench init \
---ignore-exist \
---skip-redis-config-generation \
-frappe-bench
+  --ignore-exist \
+  --skip-redis-config-generation \
+  frappe-bench
 
-cd frappe-bench
+cd "$WORKDIR/frappe-bench"
 
-# Use containers instead of localhost
+# Nastav kontejnery jako hosty
 bench set-mariadb-host mariadb
 bench set-redis-cache-host redis-cache:6379
 bench set-redis-queue-host redis-queue:6379
 bench set-redis-socketio-host redis-socketio:6379
 
-# Remove redis from Procfile
-sed -i '/redis/d' ./Procfile
+# Vyhoď redis z Procfile (řeší kontejnery)
+if [[ -f "./Procfile" ]]; then
+  sed -i '/redis/d' ./Procfile || true
+fi
 
-
+# Vytvoř neinteraktivně site (tady se to dřív sekalo)
 bench new-site dev.localhost \
---mariadb-root-password 123 \
---admin-password admin \
---no-mariadb-socket
+  --mariadb-root-password 123 \
+  --db-root-username root \
+  --admin-password admin \
+  --no-mariadb-socket \
+  --force
 
 bench --site dev.localhost set-config developer_mode 1
 bench --site dev.localhost clear-cache
 bench use dev.localhost
+
+echo "✅ Init complete. You can now run: bench start"
