@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-# Root repozitáře (o úroveň výš nad .devcontainer)
-WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# V Codespaces máme /workspace = root repozitáře
+WORKDIR="/workspace"
 BENCH_DIR="$WORKDIR/frappe-bench"
 
 echo "🚀 Initializing Frappe bench in $BENCH_DIR"
 
-# Pokud už bench existuje (např. při restartu Codespace), skonči
+# Když už bench existuje (třeba při restartu Codespace), skonči
 if [[ -f "$BENCH_DIR/apps/frappe/frappe/__init__.py" ]]; then
   echo "✅ Bench already exists, skipping init"
   exit 0
@@ -29,7 +29,6 @@ bench set-redis-cache-host redis-cache:6379
 bench set-redis-queue-host redis-queue:6379
 bench set-redis-socketio-host redis-socketio:6379
 
-# Vytvoř neinteraktivně site
 echo "🌐 Creating dev.localhost site..."
 bench new-site dev.localhost \
   --mariadb-root-password 123 \
@@ -43,4 +42,4 @@ bench --site dev.localhost clear-cache
 bench use dev.localhost
 
 echo "✅ Init done."
-echo "➡️  In terminal run: cd frappe-bench && bench start"
+echo "➡️  Run in terminal: cd frappe-bench && bench start"
