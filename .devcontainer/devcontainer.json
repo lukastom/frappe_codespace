@@ -1,20 +1,16 @@
 {
   "name": "Frappe Bench",
+  "forwardPorts": [8000, 9000, 6787],
+  "remoteUser": "frappe",
   "dockerComposeFile": "./docker-compose.yml",
   "service": "frappe",
   "workspaceFolder": "/workspace",
-  "remoteUser": "frappe",
-
-  "forwardPorts": [8000, 9000, 6787],
+  "postCreateCommand": "bash .devcontainer/scripts/init.sh",
   "shutdownAction": "stopCompose",
-
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash",
     "debug.node.autoAttach": "disabled"
   },
-
-  "postCreateCommand": "bash /workspace/scripts/init.sh",
-
   "extensions": [
     "ms-python.python",
     "ms-vscode.live-server",
