@@ -1,8 +1,6 @@
 # Setup
 
-It's ridiculously easy - 
-
-![open-with-codespaces](https://docs.github.com/assets/cb-138303/images/help/codespaces/new-codespace-button.png)
+Go to <kbd>Code > Codespaces > Create codespace on master</kbd>
 
 Setup happens in two steps - 
 1. Github will first create a codespace
