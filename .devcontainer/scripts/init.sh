@@ -1,13 +1,11 @@
 #!/bin/bash
 set -e
 
-# V Codespaces máme /workspace = root repozitáře (je namapovaný v docker-compose.yml)
 WORKDIR="/workspace"
 BENCH_DIR="$WORKDIR/frappe-bench"
 
 echo "Initializing Frappe bench in $BENCH_DIR"
 
-# Pokud už bench existuje (třeba při restartu Codespace), skonči
 if [[ -f "$BENCH_DIR/apps/frappe/frappe/__init__.py" ]]; then
   echo "Bench already exists, skipping init"
   exit 0
@@ -34,7 +32,7 @@ bench new-site dev.localhost \
   --mariadb-root-password 123 \
   --db-root-username root \
   --admin-password admin \
-  --no-mariadb-socket \
+  --mariadb-user-host-login-scope='%' \
   --force
 
 bench --site dev.localhost set-config developer_mode 1
